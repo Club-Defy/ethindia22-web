@@ -1,11 +1,14 @@
 import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
 import { registerUser } from "./api.js"
+import ERC20_ABI from "./abis/erc20Abi.json"
+import ERC721_ABI from "./abis/erc721Abi.json"
+import UNISWAP_ABI from "./abis/uniswapAbi.json"
 
 let provider
 let signer
 
 function decodePayload(encodedString) {
-    if(!encodedString) return {};
+    if (!encodedString) return {};
     let decodedString = window.atob(encodedString);
     try {
         return JSON.parse(decodedString)
@@ -45,6 +48,10 @@ async function getSignerAddress() {
     }
 }
 
+function initiateContactConnection(contractAddress, contractAbi) {
+    return new ethers.Contract(contractAddress, contractAbi, signer);
+}
+
 async function transferEth(walletAddress, payload) {
     if (!provider) return;
     const params = [{
@@ -59,18 +66,22 @@ async function transferEth(walletAddress, payload) {
 }
 
 async function transferErc20(userAddress, contract, params) {
+    let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
     // transfer erc20
 }
 
 async function transferErc721(userAddress, contract, params) {
+    let erc721Contract = initiateContactConnection(contract, ERC721_ABI);
     // transfer erc721
 }
 
 async function swapTokens(userAddress, contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     // swap tokens
 }
 
 async function approveSwap(userAddress, contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     // approve swap
 }
 
