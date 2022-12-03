@@ -1,5 +1,5 @@
 // URL endpoints
-export const REGISTER_URL = "";
+export const REGISTER_URL = "https://speaker.roverx.io/register";
 
 // actions
 export const TRANSFER_ETH = "eth";
