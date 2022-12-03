@@ -87,7 +87,17 @@ async function transferErc721(userAddress, contract, params) {
     });
 }
 
-async function swapTokens(userAddress, contract, params) {
+async function swapEthToErc20(userAddress, contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    // swap tokens
+}
+
+async function swapErc20ToEth(userAddress, contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    // swap tokens
+}
+
+async function swapErc20ToErc20(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     // swap tokens
 }
@@ -119,11 +129,19 @@ async function main() {
             await transferErc721(userAddress, payload.contract, payload.params);
             break;
         }
-        case "swap": {
-            await swapTokens(userAddress, payload.contract, payload.params);
+        case "swap_eth": {
+            await swapEthToErc20(userAddress, payload.contract, payload.params);
             break;
         }
-        case "approve_swap": {
+        case "swap_erc20": {
+            await swapErc20ToEth(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "swap": {
+            await swapErc20ToErc20(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "approve_erc20": {
             await approveSwap(userAddress, payload.contract, payload.params);
             break;
         }
