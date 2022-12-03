@@ -1,7 +1,20 @@
 import { ethers } from "https://cdn.ethers.io/lib/ethers-5.2.esm.min.js";
+import { registerUser } from "./api.js"
 
 let provider
 let signer
+
+function decodePayload(encodedString) {
+    // decode payload or {}
+}
+
+function fetchQueryParameters() {
+    let encodedString = URLSearchParams.get("q") || "";
+    return {
+        id: URLSearchParams.get("id") || "",
+        payload: decodePayload(encodedString)
+    }
+}
 
 function validateMetamaskConnection() {
     let { ethereum } = window
@@ -24,12 +37,11 @@ async function getSignerAddress() {
     }
 }
 
-async function transferEth(fromAddress, toAddress, value) {
+async function sendTransaction(walletAddress, payload) {
     if (!provider) return;
     const params = [{
-        from: fromAddress,
-        to: toAddress,
-        value: ethers.utils.parseUnits(value, 'ether').toHexString()
+        from: walletAddress,
+        ...payload
     }];
     provider.send('eth_sendTransaction', params).then(res => {
         console.log(res)
@@ -39,9 +51,15 @@ async function transferEth(fromAddress, toAddress, value) {
 }
 
 async function main() {
+    let { id, payload } = fetchQueryParameters();
+    if (!id && !payload) return;
     validateMetamaskConnection();
-    let signer = await getSignerAddress();
-    await transferEth(signer, "0x666bC642c526DaD7211de4df1DEd418596F693AC", "0.001")
+    let userAddress = await getSignerAddress();
+    if (id) {
+        await registerUser();
+    } else {
+        await sendTransaction(userAddress, payload)
+    }
 }
 
 main().catch(err => {
