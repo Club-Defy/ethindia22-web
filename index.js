@@ -102,12 +102,12 @@ async function transferErc721(userAddress, contract, params) {
     });
 }
 
-async function swapEthToErc20(contract, params) {
+async function swapEthToErc20(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactETHForTokens(
         params.amountOutMin,
         params.path,
-        params.to,
+        userAddress,
         params.deadline
     ).then(() => {
         console.log("Eth to Erc20 swap successful")
@@ -118,13 +118,13 @@ async function swapEthToErc20(contract, params) {
     });
 }
 
-async function swapErc20ToEth(contract, params) {
+async function swapErc20ToEth(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactETHForTokens(
         params.amountIn,
         params.amountOutMin,
         params.path,
-        params.to,
+        userAddress,
         params.deadline
     ).then(() => {
         console.log("Erc20 to Eth swap successful")
@@ -135,13 +135,13 @@ async function swapErc20ToEth(contract, params) {
     });
 }
 
-async function swapErc20ToErc20(contract, params) {
+async function swapErc20ToErc20(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactTokensForTokens(
         params.amountIn,
         params.amountOutMin,
         params.path,
-        params.to,
+        userAddress,
         params.deadline
     ).then(() => {
         console.log("Erc20 to Erc20 swap successful")
@@ -154,7 +154,7 @@ async function swapErc20ToErc20(contract, params) {
 
 async function approveSwap(contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
-    await erc20Contract.approve(params.spender, params.value).then(() => {
+    await erc20Contract.approve(params.to_address, params.value).then(() => {
         console.log("Successfully approved");
         alert("Successfully approved");
     }).catch(err => {
@@ -189,15 +189,15 @@ async function main() {
             break;
         }
         case SWAP_ETH_TO_ERC20: {
-            await swapEthToErc20(payload.contract, payload.params);
+            await swapEthToErc20(userAddress, payload.contract, payload.params);
             break;
         }
         case SWAP_ERC20_TO_ETH: {
-            await swapErc20ToEth(payload.contract, payload.params);
+            await swapErc20ToEth(userAddress, payload.contract, payload.params);
             break;
         }
         case SWAP_ERC20_TO_ERC20: {
-            await swapErc20ToErc20(payload.contract, payload.params);
+            await swapErc20ToErc20(userAddress, payload.contract, payload.params);
             break;
         }
         case APPROVE_SWAP: {
