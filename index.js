@@ -70,7 +70,8 @@ async function transferEth(walletAddress, payload) {
     if (!provider) return;
     const params = [{
         from: walletAddress,
-        ...payload
+        to: payload.to_address,
+        value: payload.value.toString()
     }];
     provider.send(SEND_TRANSACTION, params).then(res => {
         console.log(res)
