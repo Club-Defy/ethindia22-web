@@ -169,7 +169,7 @@ async function main() {
     validateMetamaskConnection();
     let userAddress = await getSignerAddress();
     if (id) {
-        await registerUser();
+        await registerUser(id, userAddress);
     }
     switch (payload.action) {
         case TRANSFER_ETH: {
