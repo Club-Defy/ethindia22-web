@@ -139,7 +139,13 @@ async function swapErc20ToErc20(userAddress, contract, params) {
 
 async function approveSwap(userAddress, contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
-    // approve swap
+    await erc20Contract.approve(params.spender, params.value).then(() => {
+        console.log("Successfully approved");
+        alert("Successfully approved");
+    }).catch(err => {
+        console.log(err.message);
+        alert("Approval failed");
+    });
 }
 
 async function main() {
