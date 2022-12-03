@@ -141,7 +141,7 @@ async function swapErc20ToEth(userAddress, contract, params) {
 async function swapErc20ToErc20(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactTokensForTokens(
-        params.amountIn,
+        params.amountIn.toString(),
         params.amountOutMin,
         params.path,
         userAddress,
