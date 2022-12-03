@@ -103,7 +103,7 @@ async function swapErc20ToErc20(userAddress, contract, params) {
 }
 
 async function approveSwap(userAddress, contract, params) {
-    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
     // approve swap
 }
 
