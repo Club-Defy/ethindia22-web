@@ -108,7 +108,10 @@ async function swapEthToErc20(userAddress, contract, params) {
         params.amountOutMin,
         params.path,
         userAddress,
-        params.deadline
+        params.deadline,
+        {
+            value: params.value.toString()
+        }
     ).then(() => {
         console.log("Eth to Erc20 swap successful")
         alert("Eth to Erc20 swap successful")
