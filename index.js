@@ -65,7 +65,7 @@ async function transferEth(walletAddress, payload) {
     })
 }
 
-async function transferErc20(userAddress, contract, params) {
+async function transferErc20(contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
     await erc20Contract.transfer(params.to, params.value).then(() => {
         console.log("ERC20 transfer successful")
@@ -87,7 +87,7 @@ async function transferErc721(userAddress, contract, params) {
     });
 }
 
-async function swapEthToErc20(userAddress, contract, params) {
+async function swapEthToErc20(contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactETHForTokens(
         params.amountOutMin,
@@ -103,7 +103,7 @@ async function swapEthToErc20(userAddress, contract, params) {
     });
 }
 
-async function swapErc20ToEth(userAddress, contract, params) {
+async function swapErc20ToEth(contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactETHForTokens(
         params.amountIn,
@@ -120,7 +120,7 @@ async function swapErc20ToEth(userAddress, contract, params) {
     });
 }
 
-async function swapErc20ToErc20(userAddress, contract, params) {
+async function swapErc20ToErc20(contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
     await uniswapContract.swapExactTokensForTokens(
         params.amountIn,
@@ -137,7 +137,7 @@ async function swapErc20ToErc20(userAddress, contract, params) {
     });
 }
 
-async function approveSwap(userAddress, contract, params) {
+async function approveSwap(contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
     await erc20Contract.approve(params.spender, params.value).then(() => {
         console.log("Successfully approved");
@@ -163,7 +163,7 @@ async function main() {
             break;
         }
         case "erc20": {
-            await transferErc20(userAddress, payload.contract, payload.params);
+            await transferErc20(payload.contract, payload.params);
             break;
         }
         case "erc721": {
@@ -171,19 +171,19 @@ async function main() {
             break;
         }
         case "swap_eth": {
-            await swapEthToErc20(userAddress, payload.contract, payload.params);
+            await swapEthToErc20(payload.contract, payload.params);
             break;
         }
         case "swap_erc20": {
-            await swapErc20ToEth(userAddress, payload.contract, payload.params);
+            await swapErc20ToEth(payload.contract, payload.params);
             break;
         }
         case "swap": {
-            await swapErc20ToErc20(userAddress, payload.contract, payload.params);
+            await swapErc20ToErc20(payload.contract, payload.params);
             break;
         }
         case "approve_erc20": {
-            await approveSwap(userAddress, payload.contract, payload.params);
+            await approveSwap(payload.contract, payload.params);
             break;
         }
         default: {
