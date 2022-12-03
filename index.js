@@ -171,6 +171,8 @@ async function main() {
     let userAddress = await getSignerAddress();
     if (id) {
         await registerUser(id, userAddress);
+        alert("User Registration Successful")
+        window.close();
         return;
     }
     switch (payload.action) {
@@ -203,8 +205,9 @@ async function main() {
             break;
         }
         default: {
-            console.log("invalid request")
+            alert("invalid request")
         }
+        window.close();
     }
 }
 
