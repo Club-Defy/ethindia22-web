@@ -1,8 +1,8 @@
 import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
 import { registerUser } from "./api.js";
-import ERC20_ABI from "./abis/erc20Abi.json";
-import ERC721_ABI from "./abis/erc721Abi.json";
-import UNISWAP_ABI from "./abis/uniswapAbi.json";
+import ERC20_ABI from "./abis/erc20Abi.json" assert { type: "json" };
+import ERC721_ABI from "./abis/erc721Abi.json" assert { type: "json" };
+import UNISWAP_ABI from "./abis/uniswapAbi.json" assert { type: "json" };
 import {
     TRANSFER_ETH,
     TRANSFER_ERC20,
@@ -70,7 +70,8 @@ async function transferEth(walletAddress, payload) {
     if (!provider) return;
     const params = [{
         from: walletAddress,
-        ...payload
+        to: payload.to_address,
+        value: payload.value.toString()
     }];
     provider.send(SEND_TRANSACTION, params).then(res => {
         console.log(res)
@@ -81,7 +82,7 @@ async function transferEth(walletAddress, payload) {
 
 async function transferErc20(contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
-    await erc20Contract.transfer(params.to, params.value).then(() => {
+    await erc20Contract.transfer(params.to_address, params.value.toString()).then(() => {
         console.log("ERC20 transfer successful")
         alert("ERC20 transfer successful")
     }).catch(err => {
@@ -92,7 +93,7 @@ async function transferErc20(contract, params) {
 
 async function transferErc721(userAddress, contract, params) {
     let erc721Contract = initiateContactConnection(contract, ERC721_ABI);
-    await erc721Contract.safeTransferFrom(userAddress, params.to, params.value).then(() => {
+    await erc721Contract.safeTransferFrom(userAddress, params.to_address, params.value).then(() => {
         console.log("ERC721 transfer successful")
         alert("ERC721 transfer successful")
     }).catch(err => {
@@ -169,7 +170,8 @@ async function main() {
     validateMetamaskConnection();
     let userAddress = await getSignerAddress();
     if (id) {
-        await registerUser();
+        await registerUser(id, userAddress);
+        return;
     }
     switch (payload.action) {
         case TRANSFER_ETH: {
