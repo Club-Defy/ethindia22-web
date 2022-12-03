@@ -93,7 +93,7 @@ async function transferErc20(contract, params) {
 
 async function transferErc721(userAddress, contract, params) {
     let erc721Contract = initiateContactConnection(contract, ERC721_ABI);
-    await erc721Contract.safeTransferFrom(userAddress, params.to, params.value).then(() => {
+    await erc721Contract.safeTransferFrom(userAddress, params.to_address, params.value).then(() => {
         console.log("ERC721 transfer successful")
         alert("ERC721 transfer successful")
     }).catch(err => {
