@@ -157,7 +157,7 @@ async function swapErc20ToErc20(userAddress, contract, params) {
 
 async function approveSwap(contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
-    await erc20Contract.approve(params.to_address, params.value).then(() => {
+    await erc20Contract.approve(params.to_address, params.value.toString()).then(() => {
         console.log("Successfully approved");
         alert("Successfully approved");
     }).catch(err => {
