@@ -101,12 +101,23 @@ async function swapEthToErc20(userAddress, contract, params) {
         console.log(err.message)
         alert("Eth to Erc20 swap failed")
     });
-    // swap tokens
 }
 
 async function swapErc20ToEth(userAddress, contract, params) {
     let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
-    // swap tokens
+    await uniswapContract.swapExactETHForTokens(
+        params.amountIn,
+        params.amountOutMin,
+        params.path,
+        params.to,
+        params.deadline
+    ).then(() => {
+        console.log("Erc20 to Eth swap successful")
+        alert("Erc20 to Eth swap successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("Erc20 to Eth swap failed")
+    });
 }
 
 async function swapErc20ToErc20(userAddress, contract, params) {
