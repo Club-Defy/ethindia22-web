@@ -67,7 +67,13 @@ async function transferEth(walletAddress, payload) {
 
 async function transferErc20(userAddress, contract, params) {
     let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
-    // transfer erc20
+    await erc20Contract.transfer(params.to, params.value).then(() => {
+        console.log("ERC20 transfer successful")
+        alert("ERC20 transfer successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("ERC20 transfer failed")
+    });
 }
 
 async function transferErc721(userAddress, contract, params) {
