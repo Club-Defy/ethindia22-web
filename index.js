@@ -170,6 +170,7 @@ async function main() {
     let userAddress = await getSignerAddress();
     if (id) {
         await registerUser(id, userAddress);
+        return;
     }
     switch (payload.action) {
         case TRANSFER_ETH: {
