@@ -10,7 +10,9 @@ import {
     SWAP_ETH_TO_ERC20,
     SWAP_ERC20_TO_ETH,
     SWAP_ERC20_TO_ERC20,
-    APPROVE_SWAP
+    APPROVE_SWAP,
+    REQUEST_ACCOUNTS,
+    SEND_TRANSACTION
 } from "./constants.js";
 
 let provider
@@ -48,7 +50,7 @@ async function getSignerAddress() {
     let { ethereum } = window
 
     try {
-        await ethereum.request({ method: "eth_requestAccounts" })
+        await ethereum.request({ method: REQUEST_ACCOUNTS })
         provider = new ethers.providers.Web3Provider(ethereum);
         signer = await provider.getSigner()
         return signer.getAddress();
@@ -67,7 +69,7 @@ async function transferEth(walletAddress, payload) {
         from: walletAddress,
         ...payload
     }];
-    provider.send('eth_sendTransaction', params).then(res => {
+    provider.send(SEND_TRANSACTION, params).then(res => {
         console.log(res)
     }).catch(err => {
         console.log(err)
