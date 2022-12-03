@@ -6,8 +6,8 @@ export async function registerUser(id, walletAddress) {
     await axios.post(
         REGISTER_URL,
         {
-            id,
-            walletAddress
+            discordId: id,
+            address: walletAddress
         }
     )
 }
