@@ -1,4 +1,4 @@
-import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
+import { ethers } from "https://cdn.ethers.io/lib/ethers-5.2.esm.min.js";
 import { registerUser } from "./api.js";
 import ERC20_ABI from "./abis/erc20Abi.json" assert { type: "json" };
 import ERC721_ABI from "./abis/erc721Abi.json" assert { type: "json" };

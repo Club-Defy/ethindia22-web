@@ -1,4 +1,4 @@
-import axios from "./node_modules/axios/dist/esm/axios.min.js";
+import axios from "https://unpkg.com/axios/dist/axios.min.js";
 import { REGISTER_URL } from "./constants.js"
 
 export async function registerUser(id, walletAddress) {
