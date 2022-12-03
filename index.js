@@ -45,7 +45,7 @@ async function getSignerAddress() {
     }
 }
 
-async function sendTransaction(walletAddress, payload) {
+async function transferEth(walletAddress, payload) {
     if (!provider) return;
     const params = [{
         from: walletAddress,
@@ -58,6 +58,22 @@ async function sendTransaction(walletAddress, payload) {
     })
 }
 
+async function transferErc20(userAddress, contract, params) {
+    // transfer erc20
+}
+
+async function transferErc721(userAddress, contract, params) {
+    // transfer erc721
+}
+
+async function swapTokens(userAddress, contract, params) {
+    // swap tokens
+}
+
+async function approveSwap(userAddress, contract, params) {
+    // approve swap
+}
+
 async function main() {
     let { id, payload } = fetchQueryParameters();
     decodePayload();
@@ -66,8 +82,31 @@ async function main() {
     let userAddress = await getSignerAddress();
     if (id) {
         await registerUser();
-    } else {
-        await sendTransaction(userAddress, payload)
+    }
+    switch (payload.action) {
+        case "eth": {
+            await transferEth(userAddress, payload.params);
+            break;
+        }
+        case "erc20": {
+            await transferErc20(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "erc721": {
+            await transferErc721(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "swap": {
+            await swapTokens(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "approve_swap": {
+            await approveSwap(userAddress, payload.contract, payload.params);
+            break;
+        }
+        default: {
+            console.log("invalid request")
+        }
     }
 }
 
