@@ -1,17 +1,25 @@
-import { ethers } from "https://cdn.ethers.io/lib/ethers-5.2.esm.min.js";
+import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
 import { registerUser } from "./api.js"
 
 let provider
 let signer
 
 function decodePayload(encodedString) {
-    // decode payload or {}
+    if(!encodedString) return {};
+    let decodedString = window.atob(encodedString);
+    try {
+        return JSON.parse(decodedString)
+    } catch (e) {
+        return {};
+    }
 }
 
 function fetchQueryParameters() {
-    let encodedString = URLSearchParams.get("q") || "";
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let encodedString = urlParams.get("q") || "";
     return {
-        id: URLSearchParams.get("id") || "",
+        id: urlParams.get("id") || "",
         payload: decodePayload(encodedString)
     }
 }
@@ -52,7 +60,8 @@ async function sendTransaction(walletAddress, payload) {
 
 async function main() {
     let { id, payload } = fetchQueryParameters();
-    if (!id && !payload) return;
+    decodePayload();
+    if (!id && !Object.keys(payload).length) return;
     validateMetamaskConnection();
     let userAddress = await getSignerAddress();
     if (id) {

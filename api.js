@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./node_modules/axios/dist/esm/axios.min.js";
 
 const REGISTER_URL =  "";
 
