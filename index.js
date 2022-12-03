@@ -1,8 +1,22 @@
 import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
-import { registerUser } from "./api.js"
-import ERC20_ABI from "./abis/erc20Abi.json"
-import ERC721_ABI from "./abis/erc721Abi.json"
-import UNISWAP_ABI from "./abis/uniswapAbi.json"
+import { registerUser } from "./api.js";
+import ERC20_ABI from "./abis/erc20Abi.json";
+import ERC721_ABI from "./abis/erc721Abi.json";
+import UNISWAP_ABI from "./abis/uniswapAbi.json";
+import {
+    TRANSFER_ETH,
+    TRANSFER_ERC20,
+    TRANSFER_ERC721,
+    SWAP_ETH_TO_ERC20,
+    SWAP_ERC20_TO_ETH,
+    SWAP_ERC20_TO_ERC20,
+    APPROVE_SWAP,
+    REQUEST_ACCOUNTS,
+    SEND_TRANSACTION,
+    PAYLOAD,
+    EMPTY_STRING,
+    DISCORD_ID
+} from "./constants.js";
 
 let provider
 let signer
@@ -20,9 +34,9 @@ function decodePayload(encodedString) {
 function fetchQueryParameters() {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
-    let encodedString = urlParams.get("q") || "";
+    let encodedString = urlParams.get(PAYLOAD) || EMPTY_STRING;
     return {
-        id: urlParams.get("id") || "",
+        id: urlParams.get(DISCORD_ID) || EMPTY_STRING,
         payload: decodePayload(encodedString)
     }
 }
@@ -39,7 +53,7 @@ async function getSignerAddress() {
     let { ethereum } = window
 
     try {
-        await ethereum.request({ method: "eth_requestAccounts" })
+        await ethereum.request({ method: REQUEST_ACCOUNTS })
         provider = new ethers.providers.Web3Provider(ethereum);
         signer = await provider.getSigner()
         return signer.getAddress();
@@ -58,7 +72,7 @@ async function transferEth(walletAddress, payload) {
         from: walletAddress,
         ...payload
     }];
-    provider.send('eth_sendTransaction', params).then(res => {
+    provider.send(SEND_TRANSACTION, params).then(res => {
         console.log(res)
     }).catch(err => {
         console.log(err)
@@ -158,31 +172,31 @@ async function main() {
         await registerUser();
     }
     switch (payload.action) {
-        case "eth": {
+        case TRANSFER_ETH: {
             await transferEth(userAddress, payload.params);
             break;
         }
-        case "erc20": {
+        case TRANSFER_ERC20: {
             await transferErc20(payload.contract, payload.params);
             break;
         }
-        case "erc721": {
+        case TRANSFER_ERC721: {
             await transferErc721(userAddress, payload.contract, payload.params);
             break;
         }
-        case "swap_eth": {
+        case SWAP_ETH_TO_ERC20: {
             await swapEthToErc20(payload.contract, payload.params);
             break;
         }
-        case "swap_erc20": {
+        case SWAP_ERC20_TO_ETH: {
             await swapErc20ToEth(payload.contract, payload.params);
             break;
         }
-        case "swap": {
+        case SWAP_ERC20_TO_ERC20: {
             await swapErc20ToErc20(payload.contract, payload.params);
             break;
         }
-        case "approve_erc20": {
+        case APPROVE_SWAP: {
             await approveSwap(payload.contract, payload.params);
             break;
         }
