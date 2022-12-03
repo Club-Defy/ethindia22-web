@@ -25,6 +25,7 @@ function decodePayload(encodedString) {
     if (!encodedString) return {};
     let decodedString = window.atob(encodedString);
     try {
+        console.log(JSON.parse(decodedString))
         return JSON.parse(decodedString)
     } catch (e) {
         return {};
@@ -71,7 +72,7 @@ async function transferEth(walletAddress, payload) {
     const params = [{
         from: walletAddress,
         to: payload.to_address,
-        value: payload.value.toString()
+        value: payload.value.toString(16)
     }];
     provider.send(SEND_TRANSACTION, params).then(res => {
         console.log(res)
