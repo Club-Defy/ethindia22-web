@@ -1,11 +1,14 @@
 import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
 import { registerUser } from "./api.js"
+import ERC20_ABI from "./abis/erc20Abi.json"
+import ERC721_ABI from "./abis/erc721Abi.json"
+import UNISWAP_ABI from "./abis/uniswapAbi.json"
 
 let provider
 let signer
 
 function decodePayload(encodedString) {
-    if(!encodedString) return {};
+    if (!encodedString) return {};
     let decodedString = window.atob(encodedString);
     try {
         return JSON.parse(decodedString)
@@ -45,7 +48,11 @@ async function getSignerAddress() {
     }
 }
 
-async function sendTransaction(walletAddress, payload) {
+function initiateContactConnection(contractAddress, contractAbi) {
+    return new ethers.Contract(contractAddress, contractAbi, signer);
+}
+
+async function transferEth(walletAddress, payload) {
     if (!provider) return;
     const params = [{
         from: walletAddress,
@@ -58,6 +65,89 @@ async function sendTransaction(walletAddress, payload) {
     })
 }
 
+async function transferErc20(contract, params) {
+    let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
+    await erc20Contract.transfer(params.to, params.value).then(() => {
+        console.log("ERC20 transfer successful")
+        alert("ERC20 transfer successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("ERC20 transfer failed")
+    });
+}
+
+async function transferErc721(userAddress, contract, params) {
+    let erc721Contract = initiateContactConnection(contract, ERC721_ABI);
+    await erc721Contract.safeTransferFrom(userAddress, params.to, params.value).then(() => {
+        console.log("ERC721 transfer successful")
+        alert("ERC721 transfer successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("ERC721 transfer failed")
+    });
+}
+
+async function swapEthToErc20(contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    await uniswapContract.swapExactETHForTokens(
+        params.amountOutMin,
+        params.path,
+        params.to,
+        params.deadline
+    ).then(() => {
+        console.log("Eth to Erc20 swap successful")
+        alert("Eth to Erc20 swap successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("Eth to Erc20 swap failed")
+    });
+}
+
+async function swapErc20ToEth(contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    await uniswapContract.swapExactETHForTokens(
+        params.amountIn,
+        params.amountOutMin,
+        params.path,
+        params.to,
+        params.deadline
+    ).then(() => {
+        console.log("Erc20 to Eth swap successful")
+        alert("Erc20 to Eth swap successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("Erc20 to Eth swap failed")
+    });
+}
+
+async function swapErc20ToErc20(contract, params) {
+    let uniswapContract = initiateContactConnection(contract, UNISWAP_ABI);
+    await uniswapContract.swapExactTokensForTokens(
+        params.amountIn,
+        params.amountOutMin,
+        params.path,
+        params.to,
+        params.deadline
+    ).then(() => {
+        console.log("Erc20 to Erc20 swap successful")
+        alert("Erc20 to Erc20 swap successful")
+    }).catch(err => {
+        console.log(err.message)
+        alert("Erc20 to Erc20 swap failed")
+    });
+}
+
+async function approveSwap(contract, params) {
+    let erc20Contract = initiateContactConnection(contract, ERC20_ABI);
+    await erc20Contract.approve(params.spender, params.value).then(() => {
+        console.log("Successfully approved");
+        alert("Successfully approved");
+    }).catch(err => {
+        console.log(err.message);
+        alert("Approval failed");
+    });
+}
+
 async function main() {
     let { id, payload } = fetchQueryParameters();
     decodePayload();
@@ -66,8 +156,39 @@ async function main() {
     let userAddress = await getSignerAddress();
     if (id) {
         await registerUser();
-    } else {
-        await sendTransaction(userAddress, payload)
+    }
+    switch (payload.action) {
+        case "eth": {
+            await transferEth(userAddress, payload.params);
+            break;
+        }
+        case "erc20": {
+            await transferErc20(payload.contract, payload.params);
+            break;
+        }
+        case "erc721": {
+            await transferErc721(userAddress, payload.contract, payload.params);
+            break;
+        }
+        case "swap_eth": {
+            await swapEthToErc20(payload.contract, payload.params);
+            break;
+        }
+        case "swap_erc20": {
+            await swapErc20ToEth(payload.contract, payload.params);
+            break;
+        }
+        case "swap": {
+            await swapErc20ToErc20(payload.contract, payload.params);
+            break;
+        }
+        case "approve_erc20": {
+            await approveSwap(payload.contract, payload.params);
+            break;
+        }
+        default: {
+            console.log("invalid request")
+        }
     }
 }
 
