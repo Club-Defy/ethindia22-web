@@ -13,3 +13,10 @@ export const APPROVE_SWAP = "approve_erc20";
 // RPC methods
 export const REQUEST_ACCOUNTS = "eth_requestAccounts";
 export const SEND_TRANSACTION = "eth_sendTransaction";
+
+// URL parameters
+export const DISCORD_ID = "id";
+export const PAYLOAD = "q";
+
+// General
+export const EMPTY_STRING = "";

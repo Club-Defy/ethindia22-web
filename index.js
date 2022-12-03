@@ -12,7 +12,10 @@ import {
     SWAP_ERC20_TO_ERC20,
     APPROVE_SWAP,
     REQUEST_ACCOUNTS,
-    SEND_TRANSACTION
+    SEND_TRANSACTION,
+    PAYLOAD,
+    EMPTY_STRING,
+    DISCORD_ID
 } from "./constants.js";
 
 let provider
@@ -31,9 +34,9 @@ function decodePayload(encodedString) {
 function fetchQueryParameters() {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
-    let encodedString = urlParams.get("q") || "";
+    let encodedString = urlParams.get(PAYLOAD) || EMPTY_STRING;
     return {
-        id: urlParams.get("id") || "",
+        id: urlParams.get(DISCORD_ID) || EMPTY_STRING,
         payload: decodePayload(encodedString)
     }
 }
