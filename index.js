@@ -1,8 +1,8 @@
 import { ethers } from "./node_modules/ethers/dist/ethers.esm.min.js";
 import { registerUser } from "./api.js";
-import ERC20_ABI from "./abis/erc20Abi.json";
-import ERC721_ABI from "./abis/erc721Abi.json";
-import UNISWAP_ABI from "./abis/uniswapAbi.json";
+import ERC20_ABI from "./abis/erc20Abi.json" assert { type: "json" };
+import ERC721_ABI from "./abis/erc721Abi.json" assert { type: "json" };
+import UNISWAP_ABI from "./abis/uniswapAbi.json" assert { type: "json" };
 import {
     TRANSFER_ETH,
     TRANSFER_ERC20,
